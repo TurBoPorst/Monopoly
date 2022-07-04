@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     public static String checkIfPlayerOwnIt;
+    public static int currentPlayersPosition;
     public static String currentPlayer;
     public static boolean gameState;
     public static String playerOne;
@@ -18,17 +19,14 @@ public class Main {
     public static int secondDice = roll.nextInt(6) + 1;
     public static int[] positionArray;
     public static int[] trackPlayersMoney;
-    public static String owner = null;
     public static String answer;
-    public static String answerBid;
     public static int[] beddedMoney;
     public static String highestBedder;
     public static int highestBid;
-    public static int noS;
-    public static boolean isBiddingOn = false;
+    public static String playersBidAnswer;
+    public static String beddingAnswer;
+    public static String owner = highestBedder;
     public static boolean isItEvenBidding = false;
-    public static String lastElement;
-    public static String finalAnswer;
     public static void chosePlayersCountAndNames(){
         int count =1;
         System.out.println("Enter players count {2:4}");
@@ -97,7 +95,7 @@ public class Main {
                     mediterraneanAvenue(i);
                 }
                 else{
-                    isBiddingOn(i);
+                    isItEvenBidding(i);
                 }
             }
         }
@@ -134,105 +132,59 @@ public class Main {
 
                 }
                 else if(answer.equalsIgnoreCase(("No"))){
-                       Biding(i);
+                    beddingAnswer = "Yes";
+                    Biding(i);
                 }
             }
         }
+        else if(owner == highestBedder){
+            System.out.println();
+        }
     }
-    public static void Biding(int i){
-        do{
-            highestBid = 0;
-            lastElement = playersName[playersName.length - 1];
-            if(playersName[i].equals(lastElement)){
-                System.out.println(playersName[i] +" do you want to bid");
-                answerBid = scan.next();
-                if(answerBid.equalsIgnoreCase("yes")){
+    public static void Biding(int i) {
+            for (i = 0; i < playersName.length; i++) {
+                System.out.println(playersName[i] + " do you want to bid?");
+                System.out.println("Highest bid is " + highestBid);
+                playersBidAnswer = scan.next();
+                if (playersBidAnswer.equalsIgnoreCase("Yes")) {
+                    highestBid = 0;
+                    beddingAnswer = "yes";
                     isItEvenBidding = true;
-                    for(int z = 0; z < playersCount;z++){
-                        System.out.println(playersName[i]+" how much you want to bid?");
-                        System.out.println("Highest bid is 0!");
-                        int amountOfBeddedMoney = scan.nextInt();
-                        beddedMoney[i] = beddedMoney[i] + amountOfBeddedMoney;
-                        trackPlayersMoney[i] = trackPlayersMoney[i] - amountOfBeddedMoney;
-                        System.out.println(playersName[i]+" has bedded " +beddedMoney[i]);
-                        if(highestBid < amountOfBeddedMoney){
-                            beddedMoney[i] = 0;
-                            if(highestBid < amountOfBeddedMoney){
-                                highestBid = amountOfBeddedMoney;
-                            }
-                            System.out.println(playersName[i]+" has bedded the highest bid of " + highestBid);
-                            highestBedder = playersName[i];
-                            System.out.println("Highest bedder is "+highestBedder);
-                            Biding(i);
-                            throwTwoDices();
-                        }
-                        else{
-                            System.out.println("You've bedded less money than the highest bid of"+ highestBid);
-                            throwTwoDices();
-                        }
+                    System.out.println(playersName[i] + " how much you want to bid?");
+                    beddedMoney[i] = scan.nextInt();
+                    trackPlayersMoney[i] = trackPlayersMoney[i] - beddedMoney[i];
+                    System.out.println(playersName[i] + " money is " + trackPlayersMoney[i]);
+                    if (highestBid < beddedMoney[i]) {
+                        highestBid = beddedMoney[i];
+                        highestBedder = playersName[i];
+                        System.out.println(highestBedder + " is the highest bedder with " + highestBid + "$ bet!");
+                        owner = highestBedder;
                     }
-                }
-                else{
-
-                    throwTwoDices();
+                } else if (playersBidAnswer.equalsIgnoreCase("No")) {
+                    isItEvenBidding = true;
+                    beddedMoney[i] = 0;
                 }
             }
-            else{
-                System.out.println(playersName[i + 1] +" do you want to bid");
-                answerBid = scan.next();
-                if(answerBid.equalsIgnoreCase("yes")){
-                    isItEvenBidding = true;
-                    for(int z = 0; z < playersCount;z++){
-                        System.out.println(playersName[i]+" how much you want to bid?");
-                        System.out.println("Highest bid is 0!");
-                        int amountOfBeddedMoney = scan.nextInt();
-                        beddedMoney[i] = beddedMoney[i] + amountOfBeddedMoney;
-                        trackPlayersMoney[i] = trackPlayersMoney[i] - amountOfBeddedMoney;
-                        System.out.println(playersName[i]+" has bedded " +beddedMoney[i]);
-                        if(highestBid < amountOfBeddedMoney){
-                            beddedMoney[i] = 0;
-                            if(highestBid < amountOfBeddedMoney){
-                                highestBid = amountOfBeddedMoney;
-                            }
-                            System.out.println(playersName[i]+" has bedded the highest bid of " + highestBid);
-                            highestBedder = playersName[i];
-                            System.out.println("Highest bedder is "+highestBedder);
-                            Biding(i);
-                            throwTwoDices();
-                        }
-                        else{
-                            System.out.println("You've bedded less money than the highest bid of"+ highestBid);
-                            throwTwoDices();
-                        }
-                    }
-                }
-                else{
-                    throwTwoDices();
-
-                }
+            if (highestBedder == owner || owner == null) {
+                isItEvenBidding = false;
+                System.out.println("The new owner is " + owner);
+                throwTwoDices();
             }
         }
-        while(owner == playersName[i] || owner == null);
-    }
-    public static void noS(int i){
-
-
-    }
-    public static void isBiddingOn(int i){
-        if(answerBid.equalsIgnoreCase("Yes")){
-            isBiddingOn = true;
+    public static void isItEvenBidding(int i) {
+        if(beddingAnswer.equalsIgnoreCase("yes")) {
+            isItEvenBidding = true;
             Biding(i);
         }
-        else{
-            isBiddingOn = false;
+        else {
+            isItEvenBidding = false;
+            throwTwoDices();
         }
     }
-
     public static void main(String[] args) {
         chosePlayersCountAndNames();
         shuffleTheOrder();
         playersStats();
         throwTwoDices();
-
     }
 }
