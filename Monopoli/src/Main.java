@@ -234,7 +234,7 @@ public class Main {
             }
             if (owner == null) {
                 isItEvenBidding = false;
-                System.out.println("The new owner is no one!");
+                System.out.println("The new owner is none!");
             }
         }
     public static void isItEvenBidding(int i) {
