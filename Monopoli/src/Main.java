@@ -27,7 +27,7 @@ public class Main {
     public static int level = 1;
     public static boolean isPlayerInJain;
     public static String[] prisonName;
-    public static int countDays;
+    public static int[] countDays;
     public static void chosePlayersCountAndNames() {
         int count = 1;
         System.out.println("Enter players count {2:4}");
@@ -38,6 +38,7 @@ public class Main {
         Arrays.fill(trackPlayersMoney, 1500);
         playersName = new String[playersCount];
         prisonName = new String[playersCount];
+        countDays = new int[playersCount];
         if (playersCount > 1 && playersCount < 5) {
             for (int i = 0; i < playersName.length; i++) {
                 System.out.println("Enter your " + count + " player name...");
@@ -68,11 +69,12 @@ public class Main {
                     if(playersName[i].equalsIgnoreCase("INMATE")){
                         getOutOfJail(i);
                         if(playersName[i].equalsIgnoreCase("INMATE")) {
-                            if(countDays == 3){
+                            if(countDays[i] == 4){
                                 System.out.println("You've served enough!");
                                 System.out.println("You are free to go.");
                                 playersName[i] = prisonName[i];
                                 prisonName[i] = playersName[i];
+                                countDays[i] = 0;
                             }
                             else{
                                 continue;
@@ -94,6 +96,7 @@ public class Main {
                         upgradeMediterraneanAvenue(i);
                         rentMediterraneanAvenue(i);
                         ToJail(i);
+                        startPositionBonus(i);
                     } else {
                         isItEvenBidding(i);
                     }
@@ -101,19 +104,28 @@ public class Main {
         }
             while (!gameState) ;
     }
-
     public static void trackingPosition(int i){
         int count = 1;
         for(int g = 0; g < (firstDice + secondDice);g++){
             positionArray[i] = positionArray[i] + count;
             if(positionArray[i] == 40){
                 positionArray[i] = 0;
+                if(positionArray[i] == 0){
+                    startPositionBonus(i);
+                }
             }
         }
         System.out.println(playersName[i]+" position is "+positionArray[i]);
     }
     public static void trackingPlayersMoney(int i){
         System.out.println(playersName[i]+" money is "+trackPlayersMoney[i]);
+    }
+    public static void startPositionBonus(int i){
+        if(positionArray[i] == 0){
+            trackPlayersMoney[i] = trackPlayersMoney[i] + 200;
+            System.out.println(playersName[i]+" arrived on the start!");
+            System.out.println(playersName[i]+" got paid 200$!");
+        }
     }
     public static void mediterraneanAvenue(int i) {
         if (owner == null) {
@@ -293,8 +305,8 @@ public class Main {
 
             }
             else if(option == 4){
-                countDays++;
-                System.out.println("Days that have passed "+countDays);
+                countDays[i]++;
+                System.out.println("Days that have passed "+countDays[i]);
             }
         }
     }
